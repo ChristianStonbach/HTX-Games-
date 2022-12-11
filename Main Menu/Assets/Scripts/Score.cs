@@ -9,22 +9,23 @@ public class Score : MonoBehaviour
     public Text ScoreText;
     int ScoreCount = 1;
     public bool isRunning = true;
-    public Text HighScore;
+    public Text highScore;
+    
 
     void Start()
     {
-        HighScore.text = "Highscore: " + PlayerPrefs.GetInt("HighScore").ToString();
+        highScore.text = "HighScore: " + PlayerPrefs.GetInt("HighScore", 0).ToString();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(Time.deltaTime.ToString());
+        
         ScoreText.text = "Score: " + ScoreCount.ToString("0");
 
         if (isRunning == true)
         {
-            ScoreCount++;
+            ScoreCount++; 
         }
 
         if (Input.GetKey("space"))
@@ -38,16 +39,18 @@ public class Score : MonoBehaviour
             isRunning = true;
         }
 
-        PlayerPrefs.SetInt("HighScore", ScoreCount);
-    }
-    public void Highscore()
-    {
-        if (ScoreCount > PlayerPrefs.GetInt("HighScore", ScoreCount))
+        if (ScoreCount > PlayerPrefs.GetInt("HighScore", 0))
         {
             PlayerPrefs.SetInt("HighScore", ScoreCount);
-            HighScore.text = ScoreText.text.ToString();
+            highScore.text = ScoreCount.ToString();
         }
-        
     }
-    
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.name == "GameLose" && isRunning == true)
+        {
+            Application.Quit();
+            Debug.Log("Game Over");
+        }
+    }
 }
